@@ -32,3 +32,7 @@ const arraySum=arr=>{
     return elementSum(arr,0,0);
 };
 arraySum([1,2,3,4,5]);
+
+const err=msg=>{throw msg};
+const _recur=(array,i,acc)=>(array[0] ?? err("invalid element index0")) && (i>-1) ? _recur(array,i-1,array[i]+acc):acc;
+const recur=array=>_recur(array,array.length-1,0);
