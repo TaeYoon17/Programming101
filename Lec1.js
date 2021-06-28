@@ -1,12 +1,4 @@
-let acc=0;
-for(let i=0; i<=10; i++) acc+=i;
-console.log(acc);
-/*
-const sum=v=>v > 1 ? v+sum(v-1): 1;
-console.log(sum(10));
-*/
 //과제
-
 const isValiArr=(arr)=> typeof(arr)==='number' ? true : (arr instanceof Array && arr.length > 0)  ? true :false;
 const isValiEl=(el)=>typeof(el)==='number' ? true: false;
 const validate=(arr,el)=>isValiArr(arr)&&isValiEl(el);
@@ -22,3 +14,17 @@ try{
 }
 console.log(isValiEl(3));
 console.log(isValiArr([1]));
+
+const arr=[3,1,2,3,4];
+let acc=0,idx=0;
+for(idx=0; idx!=arr.length-1; idx++){
+    if(!validate(arr,arr[idx])) throw "invalidValidate";
+    acc+=arr[idx];
+}
+acc+=arr[idx];
+try{
+    console.log(acc);
+}catch(e){
+    console.error(e);
+}
+
