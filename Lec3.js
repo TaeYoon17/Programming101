@@ -23,20 +23,27 @@ const stringify=arr=>{
     return arr.length===0 ? "[]": recursive(arr,"",0);
 }
 const EMPTY={};
-const forStringify=arr=>{
-    if(!Array.isArray(arr)) throw "invalid arr";
-    let result=EMPTY;
-    if(arr.length===0) result="[]";
-    else{
-        let acc="",i=0;
-        while(i<arr.length){
-            acc=acc+`,${el.stringify(arr[i])}`;
-            i=i+1;
+
+const resultProcess={
+    data:{
+        "true":(arr)=>"[]",
+        "false":(arr)=>{
+            let acc="",i=0;
+            while(i<arr.length){
+                acc=acc+`,${el.stringify(arr[i])}`;
+                i=i+1;
+            }
+            return `[${acc.substr(1)}]`;
         }
-        result=`[${acc.substr(1)}]`;
+    },
+    process(arr){
+        return this.data[arr.length===0](arr);
     }
-    if(result===EMPTY) throw "no processed" //shield
-    return result;
 }
 
-console.log(typeof stringify(["gdg",123,235]));
+const forStringify=arr=>{
+    if(!Array.isArray(arr)) throw "invalid arr";
+    return resultProcess.process(arr);
+}
+
+console.log(forStringify(["gdg",123,235]));
