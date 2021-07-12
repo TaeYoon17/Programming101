@@ -1,17 +1,22 @@
-const stringCheck ={
+const Lec2Review=()=>{
+    const stringCheck ={
     data:[[/[\r\n\l]/g],[/"/g,"\\\""],[/\t/g, "\\t"]],
     convert(v){
         return this.data.reduce((acc,curr)=>acc.replace(curr[0],curr[1]),v)
     }
 };
 const el={
-    data:{
+    table:{
         boolean:v=>v.toString(),
         number:v=>v.toString(),
-        string:v=>`"${stringCheck.convert(v)}"`
+        string:v=>`"${stringCheck.convert(v)}"`,
+        symbol:v=>"null",
+        "null":v=>"null",
+        array:v=>{},
+        object:v=>{},
     },
     stringify(v){//라우터
-        return this.data[typeof v]?.(v) ?? "null";
+        return (this.table[typeof v]?? this.table[!v ? "null": Array.isArray(v) ? "array":"object"])?.(v) ?? "null";
     }
 }
 
@@ -47,3 +52,30 @@ const forStringify=arr=>{
 }
 
 console.log(forStringify(["gdg",123,235]));
+};
+
+// 과제
+const arr=[1,2,["a",[1,2],false],3,["b","c",[1,2]]] // stringify
+//const arr=[1,2,[3,4]];
+const recursive1=(arr,idx=0,acc="")=>{
+    return idx<arr.length ?
+        recursive1(arr,idx+1,Array.isArray(arr[idx]) ? acc+`,${recursive1(arr[idx],0,"")}`: acc+`,${arr[idx]}`) :
+    `[${acc.substr(1)}]`;
+}
+
+const stackPop=(stack,newAcc)=>{
+    const {arr,idx,acc}=stack.pop();
+    return recursive2(arr,idx+1,acc+`,[${newAcc.substr(1)}]`,stack);
+}
+const recursive2=(arr,idx=0,acc="",stack=[])=>{
+    return idx<arr.length ?
+    (Array.isArray(arr[idx]) ? recursive2(arr[idx],0,"",[...stack,{arr,idx,acc}]): recursive2(arr,idx+1,acc+`,${arr[idx]}`,stack))
+    : stack.length==0 ?  `[${acc.substr(1)}]` :stackPop(stack,acc);
+}
+
+const stringfy=arr=>{
+    if(!Array.isArray(arr)) throw "invalid arr";
+    return arr.length===0 ? "[]": recursive2(arr,0,"");
+}
+
+console.log(stringfy(arr));
