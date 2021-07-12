@@ -55,7 +55,7 @@ console.log(forStringify(["gdg",123,235]));
 };
 
 // 과제
-const arr=[1,2,["a",[1,2],false],3,["b","c",[1,2]]] // stringify
+const arrStringfy=[1,2,["a",[1,2],false],3,["b","c",[1,2]]] // stringify
 //const arr=[1,2,[3,4]];
 const recursive1=(arr,idx=0,acc="")=>{
     return idx<arr.length ?
@@ -67,15 +67,49 @@ const stackPop=(stack,newAcc)=>{
     const {arr,idx,acc}=stack.pop();
     return recursive2(arr,idx+1,acc+`,[${newAcc.substr(1)}]`,stack);
 }
-const recursive2=(arr,idx=0,acc="",stack=[])=>{
-    return idx<arr.length ?
-    (Array.isArray(arr[idx]) ? recursive2(arr[idx],0,"",[...stack,{arr,idx,acc}]): recursive2(arr,idx+1,acc+`,${arr[idx]}`,stack))
-    : stack.length==0 ?  `[${acc.substr(1)}]` :stackPop(stack,acc);
+const el={
+    table:{
+        boolean:v=>v.toString(),
+        number:v=>v.toString(),
+        string:v=>`"${v}"`,
+        symbol:v=>"null",
+        "null":v=>"null",
+        array:v=>{},
+        object:v=>{},
+    },
+    stringify(v){//라우터
+        return (this.table[typeof v]?? this.table[!v ? "null": Array.isArray(v) ? "array":"object"])?.(v) ?? "null";
+    }
 }
 
+const recursive2=(arr,idx=0,acc="",stack=[])=>{
+    return idx<arr.length ?
+    (Array.isArray(arr[idx]) ? recursive2(arr[idx],0,"",[...stack,{arr,idx,acc}]): recursive2(arr,idx+1,acc+`,${el.stringify(arr[idx])}`,stack)) 
+    : stack.length==0 ?  `[${acc.substr(1)}]` :stackPop(stack,acc);
+}
 const stringfy=arr=>{
     if(!Array.isArray(arr)) throw "invalid arr";
     return arr.length===0 ? "[]": recursive2(arr,0,"");
 }
+console.log(stringfy(arrStringfy));
 
-console.log(stringfy(arr));
+let idx=0,acc="",stack=[],arr=arrStringfy.map(v=>v);
+while(idx<arr.length){
+    if(Array.isArray(arr[idx])){
+        arr=arr[idx];
+        idx=0;
+        acc="";
+        stack=[...stack,{sotreArr,storeIdx,sotreAcc}];
+    }else{
+        idx=idx+1;
+        acc=acc+`,${el.stringify(arr[idx])}`;
+    }
+    if(stack.length==0) return `[${acc.substr(1)}]`;
+    else {
+        const {storeArr,storeIdx,storeAcc}=stack.pop();
+        arr=storeArr;
+        idx=storeIdx;
+        acc=storeAcc+`,[${newAcc.substr(1)}]`;
+    }
+}
+console.log(acc);
