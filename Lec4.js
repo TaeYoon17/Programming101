@@ -6,16 +6,18 @@ const arrToString=arr=>{
 const table={
     array:(currEl,arr,acc,i,stack)=>{ // 전략 객체1
         stack.push([arr,acc,i+1]);
-        return [arr[i],[],0];
+        return [arr,[],0];
     },
     number:(currEl,arr,acc,i,stack)=>{ // 전략 객체2
-        acc.push(""+v);
+        acc.push(""+currEl);
         return [arr,acc,i+1];
     }
 }
 const elementProcess=(currEl,arr,acc,i,stack)=>{
     for(const v of table)v(currEl,arr,acc,i,stack)
 };
+
+const elementToString=e=>""+e;
 const recursive=(arr,acc,i,stack)=>{
     if(i<arr.length){
         const currEl=arr[i];
@@ -33,3 +35,33 @@ const recursive=(arr,acc,i,stack)=>{
         }
     }
 }
+const arrToString2=finalNode=>{
+    let arrStr="", curr=finalNode;
+    const arr=[];
+    do{
+        arr.unshift(curr.value);
+    }while(curr=curr.prev);
+    for(const v of arr) arrStr+=','+v;
+    return "{"+arrStr.substr(1)+"}";
+}
+const recursive2=(arr,acc,i,prev)=>{
+    if(i<arr.length){
+        const currEl=arr[i];
+        if(Array.isArray(currEl)){
+            return recursive2(arr,null,0,[arr,acc,i+1,prev]);
+        }else{
+            return recursive2(arr,{prev:acc,value:elementToString(currEl)},i+1,prev);
+        }
+    }else{
+        const accStr=arrToString2(acc);
+        if(prev){
+            const [prevArr,prevAcc,prevIndex,prevPrev]=prev;
+            return recursive2(prevArr,{prev:prevAcc,value:accStr},prevIndex,prevPrev);
+        }else{
+            return accStr;
+        }
+    }
+}
+const stringify=arr=>recursive2(arr,null,0,null);
+
+console.log(stringify([1,2,3,4]));
