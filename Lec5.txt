@@ -1,0 +1,23 @@
+entry [키, 값] 형태의 구조체
+배열 원소2개, 0번 key, 1번 value
+
+routine => 메모리에 명령과 값이 적재되어 필요할때 뽑아쓰는 것
+1. 한번 입장하면 무조건 반환된다.
+2. 반복적으로 사용할 수 있다.
+3. 인자를 받아들여 내부 로직에 활용할 수 있다.
+=> 명령이 적재되면 한번에 다 실행된다.
+co-routine =>
+1. 여러번 진입할 수 있고 여러번 반환할 수 있다.
+2. 특수한 반환을 통해 그 다음 진입을 지정할 수 있다.
+=> generator (코루틴)
+=> async await (코루틴 X, suspend & resume)
+==> async iterator
+==> async function*(){
+    yield await a();
+    yield await b();
+}
+function *(){
+    yield 3;
+    yield 4;
+    return 5;
+}

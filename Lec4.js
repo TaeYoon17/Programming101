@@ -96,9 +96,8 @@ const arrToString=acc=>{
     let nowAcc=acc;
     const arr=[];
     do{
-        arr.unshift(nowAcc.value);
+        str=`${str},${makeObj(nowAcc.value)}`;
     }while(nowAcc=nowAcc.prev);
-    for(const v of arr) str=`${str},${makeObj(v)}`;
     return `{${str.substr(1)}}`;
 }
 
