@@ -69,8 +69,22 @@ const _recursion=(iter,isObject,acc,prev)=>{
 
 const stringify=obj=>_recursion(Array.isArray(obj)? obj[Symbol.iterator]() : objEntries(obj),!Array.isArray(obj),null,null);
 //console.log([1,2,3,4,5][Symbol.iterator]());
-console.log(stringify({a:1,b:2,c:"hello",d:[{a:1}]}));
+//console.log(stringify({a:1,b:2,c:"hello",d:[{a:1}]}));
 
 
 //과제1
 [1,2,3,4,5,6,7].filter(v=>v%2).map(v=>v*2);
+
+const arrFilter=function *(arr,fn){
+    for(var a of arr)
+        if(fn(a)) yield a;
+}
+const arrMap=function*(arr,fn){
+    for(var a of arr)
+        yield fn(a);
+}
+const makeArrIterator=(arr)=>arr[Symbol.iterator]();
+const arr=makeArrIterator([1,2,3,4,5,6,7]);
+const subject=(arr)=>arrMap(arrFilter(makeArrIterator(arr),v=>v%2),v=>v*2);
+console.log([...subject([1,2,3,4,5,6,7])]);
+//console.log([...arrMap(arrFilter(arr))]);
